@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = "ravi685/petclinic"
+    }
+
     stages {
         stage('Build') {
             steps {
@@ -10,7 +14,7 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t ravi685/petclinic:${BUILD_NUMBER} .'
+                sh "docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} ."
             }
         }
 
@@ -23,9 +27,9 @@ pipeline {
                 )]) {
                     sh '''
                     echo "${docker_password}" | docker login -u "${docker_username}" --password-stdin
-                    docker push ravi685/petclinic:${BUILD_NUMBER}
-                    docker tag ravi685/petclinic:${BUILD_NUMBER} ravi685/petclinic:latest
-                    docker push ravi685/petclinic:latest
+                    docker push ${IMAGE_NAME}:${BUILD_NUMBER}
+                    docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${IMAGE_NAME}:latest
+                    docker push ${IMAGE_NAME}:latest
                     '''
                 }
             }
