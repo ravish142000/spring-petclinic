@@ -15,15 +15,17 @@ pipeline {
         }
 
         stage('Docker Push') {
-            withCredentials([usernamePassword(
-            credentialsId: 'dockerhub-creds', 
-            usernameVariable: 'docker_username',
-            passwordVariable: 'docker_password')]) {
             steps {
-                sh '''
-                echo "${docker_password}" | docker login -u "${docker_username}" --password-stdin
-                docker push ravi685/petclinic:${BUILD_NUMBER}
-                '''
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds', 
+                    usernameVariable: 'docker_username',
+                    passwordVariable: 'docker_password'
+                )]) {
+                    sh '''
+                    echo "${docker_password}" | docker login -u "${docker_username}" --password-stdin
+                    docker push ravi685/petclinic:${BUILD_NUMBER}
+                    '''
+                }
             }
         }
     }
