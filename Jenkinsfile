@@ -10,15 +10,19 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t ravi685/petclinic:v1 .'
+                sh 'docker build -t ravi685/petclinic:${BUILD_NUMBER} .'
             }
         }
 
         stage('Docker Push') {
+            withCredentials([usernamePassword(
+            credentialsId: 'dockerhub-creds', 
+            usernameVariable: 'docker_username',
+            passwordVariable: 'docker_password')]) {
             steps {
                 sh '''
-                echo "Ravish142000" | docker login -u ravi685 --password-stdin
-                docker push ravi685/petclinic:v1
+                echo "${docker_password}" | docker login -u "${docker_username}" --password-stdin
+                docker push ravi685/petclinic:${BUILD_NUMBER}
                 '''
             }
         }
