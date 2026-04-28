@@ -24,6 +24,8 @@ pipeline {
                     sh '''
                     echo "${docker_password}" | docker login -u "${docker_username}" --password-stdin
                     docker push ravi685/petclinic:${BUILD_NUMBER}
+                    docker tag ravi685/petclinic:${BUILD_NUMBER} ravi685/petclinic:latest
+                    docker push ravi685/petclinic:latest
                     '''
                 }
             }
